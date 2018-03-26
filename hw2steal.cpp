@@ -19,9 +19,9 @@ vector<int> rand_seed;
 bool first_task = false;
 bool flag = true;
 
-inline int fastrand() { 
-  g_seed = (214013*g_seed+2531011); 
-  return (g_seed>>16)&0x7FFF; 
+inline int fastrand(int thread_ID) { 
+  rand_seed[thread_ID] = (214013*rand_seed[thread_ID]+2531011); 
+  return (rand_seed[thread_ID]>>16)&0x7FFF; 
 }
 
 struct Task{
@@ -89,12 +89,10 @@ int main(){
 					//printf("deque size:%d\n",   deques[thread_ID].size());
 				  }else{
 					//printf("Deque is empty\n");
-					int steal_from = rand()%num_threads;
+					int steal_from = fastrand(thread_ID)%num_threads;
 					if (deques[steal_from].size() > 0){
 						current_task = deques[steal_from].front();
 						deques[steal_from].pop_front();
-					}else{
-					  //printf("Failed steal\n");
 					}
 				  }
 				}
